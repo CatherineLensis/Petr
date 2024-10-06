@@ -8,22 +8,22 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "");
     int n;
-    cin >> n; // Считываем количество задач
-    wcout << L"Количество задач: " << n << endl; // Отладочный вывод
-
+    wcout << L"РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡: ";
+    cin >> n; // РЎС‡РёС‚С‹РІР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡
+    
     TaskManager taskManager;
 
-    // Считываем задачи и добавляем их в TaskManager
+    // РЎС‡РёС‚С‹РІР°РµРј Р·Р°РґР°С‡Рё Рё РґРѕР±Р°РІР»СЏРµРј РёС… РІ TaskManager
     for (int i = 0; i < n; ++i) {
         int deadline, stress;
         cin >> deadline >> stress;
-        wcout << L"Считали задачу: дедлайн = " << deadline << L", стресс = " << stress << endl; // Отладочный вывод
+        wcout << L"РЎС‡РёС‚Р°Р»Рё Р·Р°РґР°С‡Сѓ: РґРµРґР»Р°Р№РЅ = " << deadline << L", СЃС‚СЂРµСЃСЃ = " << stress << endl; // РћС‚Р»Р°РґРѕС‡РЅС‹Р№ РІС‹РІРѕРґ
         taskManager.addTask(deadline, stress);
     }
 
-    // Вычисляем и выводим минимальный суммарный стресс
-    long long result = taskManager.minimizeStress();
-    wcout << L"Результат минимального суммарного стресса: " << result << endl;
+    // Р’С‹С‡РёСЃР»СЏРµРј Рё РІС‹РІРѕРґРёРј РјРёРЅРёРјР°Р»СЊРЅС‹Р№ СЃСѓРјРјР°СЂРЅС‹Р№ СЃС‚СЂРµСЃСЃ
+    long long resultat = taskManager.minimizeStress();
+    wcout << L"Р РµР·СѓР»СЊС‚Р°С‚ РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ СЃСѓРјРјР°СЂРЅРѕРіРѕ СЃС‚СЂРµСЃСЃР°: " << resultat << endl;
 
     return 0;
 }
