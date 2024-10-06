@@ -1,72 +1,64 @@
 #pragma once
+
 #include <iostream>
 #include <vector>
 #include <queue>
 #include <algorithm>
 using namespace std;
-// Класс Task для представления одной задачи
+// РљР»Р°СЃСЃ Task РґР»СЏ РїСЂРµРґСЃС‚Р°РІР»РµРЅРёСЏ РѕРґРЅРѕР№ Р·Р°РґР°С‡Рё
 class Task {
 public:
-	int deadline; // Дедлайн задачи
-	int stress;   // Величина стресса при невыполнении
+	int deadline; // Р”РµРґР»Р°Р№РЅ Р·Р°РґР°С‡Рё
+	int stress;   // Р’РµР»РёС‡РёРЅР° СЃС‚СЂРµСЃСЃР° РїСЂРё РЅРµРІС‹РїРѕР»РЅРµРЅРёРё
 
-	// Конструктор задачи
+	// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ Р·Р°РґР°С‡Рё
 	Task(int d, int w) : deadline(d), stress(w) {}
 };
 
-// Класс TaskManager для управления задачами
+// РљР»Р°СЃСЃ TaskManager РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ Р·Р°РґР°С‡Р°РјРё
 class TaskManager {
 private:
-	vector<Task> tasks; // Список задач
+	vector<Task> tasks; // РЎРїРёСЃРѕРє Р·Р°РґР°С‡
 
 public:
-	// Метод для добавления задачи
+	// РњРµС‚РѕРґ РґР»СЏ РґРѕР±Р°РІР»РµРЅРёСЏ Р·Р°РґР°С‡Рё
 	void addTask(int deadline, int stress) {
 		tasks.emplace_back(deadline, stress);
 	}
-
-	// Метод для вычисления минимального суммарного стресса
+	// РњРµС‚РѕРґ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ РјРёРЅРёРјР°Р»СЊРЅРѕРіРѕ СЃСѓРјРјР°СЂРЅРѕРіРѕ СЃС‚СЂРµСЃСЃР°
 	long long minimizeStress() {
-		// Сортируем задачи по дедлайну
+		// РЎРѕСЂС‚РёСЂСѓРµРј Р·Р°РґР°С‡Рё РїРѕ РґРµРґР»Р°Р№РЅСѓ
 		sort(tasks.begin(), tasks.end(), [](const Task& a, const Task& b) {
 			return a.deadline < b.deadline;
 			});
 
-		// Приоритетная очередь (max-heap) для хранения стрессов задач
-		priority_queue<int> max_heap;
-		long long total_stress = 0;
-		//Для текущего дня
+		// РџСЂРёРѕСЂРёС‚РµС‚РЅР°СЏ РѕС‡РµСЂРµРґСЊ (max-heap) РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЃС‚СЂРµСЃСЃРѕРІ Р·Р°РґР°С‡
+		priority_queue<int, vector<int>, greater<int>> min_heap;
+
+		//Р”Р»СЏ С‚РµРєСѓС‰РµРіРѕ РґРЅСЏ
 		int current_day = 0;
-		int result = 0;
-		// Проходим по всем задачам
+		long long result = 0;
+		// РџСЂРѕС…РѕРґРёРј РїРѕ РІСЃРµРј Р·Р°РґР°С‡Р°Рј
+
 		for (const auto& task : tasks) {
-			//Если наступил новый день, увеличиваем текущий день
+			//Р•СЃР»Рё РЅР°СЃС‚СѓРїРёР» РЅРѕРІС‹Р№ РґРµРЅСЊ, СѓРІРµР»РёС‡РёРІР°РµРј С‚РµРєСѓС‰РёР№ РґРµРЅСЊ
 			current_day = task.deadline;
-			
-			// Добавляем задачу в кучу
-			max_heap.push(task.stress);
-			cout << "Добавили задачу: дедлайн = " << task.deadline
-				<< ", стресс = " << task.stress << endl;
-			// Выводим текущий день и задачи в куче
+
+			// Р”РѕР±Р°РІР»СЏРµРј Р·Р°РґР°С‡Сѓ РІ РєСѓС‡Сѓ
+			min_heap.push(task.stress);
+			cout << "Р”РѕР±Р°РІРёР»Рё Р·Р°РґР°С‡Сѓ: РґРµРґР»Р°Р№РЅ = " << task.deadline
+				<< ", СЃС‚СЂРµСЃСЃ = " << task.stress << endl;
+			// Р’С‹РІРѕРґРёРј С‚РµРєСѓС‰РёР№ РґРµРЅСЊ Рё Р·Р°РґР°С‡Рё РІ РєСѓС‡Рµ
 			cout << "Current day: " << current_day << endl;
 			cout << "Tasks in heap: ";
-			priority_queue<int> temp_heap = max_heap;
-			while (!temp_heap.empty()) {
-				cout << temp_heap.top() << " ";
-				temp_heap.pop();
-			}
 			cout << endl;
-			// Если количество задач больше, чем доступные дни до дедлайна
-			if (max_heap.size() > current_day) {
-				
-				total_stress += max_heap.top(); // Суммируем стресс, который выкидываем
-				max_heap.pop(); // Удаляем эту задачу
-				result += max_heap.top(); //суммируем саму кучу
+			// Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РґР°С‡ Р±РѕР»СЊС€Рµ, С‡РµРј РґРѕСЃС‚СѓРїРЅС‹Рµ РґРЅРё РґРѕ РґРµРґР»Р°Р№РЅР°
+			if (min_heap.size() > current_day) {
+				result += min_heap.top();//СЃСѓРјРјРёСЂСѓРµРј СЃР°РјСѓ РєСѓС‡Сѓ
+				min_heap.pop(); // РЈРґР°Р»СЏРµРј СЌС‚Сѓ Р·Р°РґР°С‡Сѓ
 			}
 		}
-		return result; // Возвращаем общий стресс, который может быть выполнен в сроки
+		return result; // Р’РѕР·РІСЂР°С‰Р°РµРј РѕР±С‰РёР№ СЃС‚СЂРµСЃСЃ, c РєРѕС‚РѕСЂС‹Рј Р·Р°РґР°С‡Рё РјРѕРіСѓС‚ Р±С‹С‚СЊ РІС‹РїРѕР»РЅРµРЅС‹ РІ СЃСЂРѕРєРё
 
 	}
-
-
 };
